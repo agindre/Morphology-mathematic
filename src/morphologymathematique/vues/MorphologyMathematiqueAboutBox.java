@@ -2,7 +2,7 @@
  * MorphologyMathematiqueAboutBox.java
  */
 
-package morphologymathematique;
+package morphologymathematique.vues;
 
 import org.jdesktop.application.Action;
 
@@ -38,13 +38,13 @@ public class MorphologyMathematiqueAboutBox extends javax.swing.JDialog {
         javax.swing.JLabel imageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(morphologymathematique.MorphologyMathematiqueApp.class).getContext().getResourceMap(MorphologyMathematiqueAboutBox.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(morphologymathematique.vues.MorphologyMathematiqueApp.class).getContext().getResourceMap(MorphologyMathematiqueAboutBox.class);
         setTitle(resourceMap.getString("title")); // NOI18N
         setModal(true);
         setName("aboutBox"); // NOI18N
         setResizable(false);
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(morphologymathematique.MorphologyMathematiqueApp.class).getContext().getActionMap(MorphologyMathematiqueAboutBox.class, this);
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(morphologymathematique.vues.MorphologyMathematiqueApp.class).getContext().getActionMap(MorphologyMathematiqueAboutBox.class, this);
         closeButton.setAction(actionMap.get("closeAboutBox")); // NOI18N
         closeButton.setName("closeButton"); // NOI18N
 

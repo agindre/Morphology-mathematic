@@ -2,8 +2,9 @@
  * MorphologyMathematiqueView.java
  */
 
-package morphologymathematique;
+package morphologymathematique.vues;
 
+import java.awt.Image;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -94,8 +95,12 @@ public class MorphologyMathematiqueView extends FrameView {
     @Action 
     public void showOuvirImage() {
         if (ouvrirFichier == null) {
-            
+            JFrame mainFrame = MorphologyMathematiqueApp.getApplication().getMainFrame();
+            ouvrirFichier = new MorphologyMathematiqueOpenImageBox(mainFrame);
+            ouvrirFichier.setLocationRelativeTo(mainFrame);
         }
+        
+        MorphologyMathematiqueApp.getApplication().show(ouvrirFichier);
     }
 
     /** This method is called from within the constructor to
@@ -139,13 +144,16 @@ public class MorphologyMathematiqueView extends FrameView {
         );
 
         menuBar.setName("menuBar"); // NOI18N
+        menuBar.setPreferredSize(new java.awt.Dimension(122, 21));
+        menuBar.setRequestFocusEnabled(false);
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(morphologymathematique.MorphologyMathematiqueApp.class).getContext().getResourceMap(MorphologyMathematiqueView.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(morphologymathematique.vues.MorphologyMathematiqueApp.class).getContext().getResourceMap(MorphologyMathematiqueView.class);
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(morphologymathematique.MorphologyMathematiqueApp.class).getContext().getActionMap(MorphologyMathematiqueView.class, this);
-        ouvertureFichier.setAction(actionMap.get("showOuvrirFichierBox")); // NOI18N
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(morphologymathematique.vues.MorphologyMathematiqueApp.class).getContext().getActionMap(MorphologyMathematiqueView.class, this);
+        ouvertureFichier.setAction(actionMap.get("showOuvirImage")); // NOI18N
+        ouvertureFichier.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         ouvertureFichier.setText(resourceMap.getString("ouvertureFichier.text")); // NOI18N
         ouvertureFichier.setName("ouvertureFichier"); // NOI18N
         fileMenu.add(ouvertureFichier);
@@ -243,6 +251,7 @@ public class MorphologyMathematiqueView extends FrameView {
     private final Icon idleIcon;
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
+    protected  Image currentImage;
 
     private JDialog aboutBox;
     private JDialog ouvrirFichier;

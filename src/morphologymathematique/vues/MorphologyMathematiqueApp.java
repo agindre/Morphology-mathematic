@@ -2,7 +2,7 @@
  * MorphologyMathematiqueApp.java
  */
 
-package morphologymathematique;
+package morphologymathematique.vues;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
