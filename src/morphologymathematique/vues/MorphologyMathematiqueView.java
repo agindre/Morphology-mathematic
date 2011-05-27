@@ -1,10 +1,8 @@
 /*
  * MorphologyMathematiqueView.java
  */
-
 package morphologymathematique.vues;
 
-import java.awt.Image;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -12,6 +10,10 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -31,6 +33,7 @@ public class MorphologyMathematiqueView extends FrameView {
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
         messageTimer = new Timer(messageTimeout, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 statusMessageLabel.setText("");
             }
@@ -41,6 +44,7 @@ public class MorphologyMathematiqueView extends FrameView {
             busyIcons[i] = resourceMap.getIcon("StatusBar.busyIcons[" + i + "]");
         }
         busyIconTimer = new Timer(busyAnimationRate, new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 busyIconIndex = (busyIconIndex + 1) % busyIcons.length;
                 statusAnimationLabel.setIcon(busyIcons[busyIconIndex]);
@@ -53,6 +57,7 @@ public class MorphologyMathematiqueView extends FrameView {
         // connecting action tasks to status bar via TaskMonitor
         TaskMonitor taskMonitor = new TaskMonitor(getApplication().getContext());
         taskMonitor.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 String propertyName = evt.getPropertyName();
                 if ("started".equals(propertyName)) {
@@ -69,11 +74,11 @@ public class MorphologyMathematiqueView extends FrameView {
                     progressBar.setVisible(false);
                     progressBar.setValue(0);
                 } else if ("message".equals(propertyName)) {
-                    String text = (String)(evt.getNewValue());
+                    String text = (String) (evt.getNewValue());
                     statusMessageLabel.setText((text == null) ? "" : text);
                     messageTimer.restart();
                 } else if ("progress".equals(propertyName)) {
-                    int value = (Integer)(evt.getNewValue());
+                    int value = (Integer) (evt.getNewValue());
                     progressBar.setVisible(true);
                     progressBar.setIndeterminate(false);
                     progressBar.setValue(value);
@@ -91,16 +96,37 @@ public class MorphologyMathematiqueView extends FrameView {
         }
         MorphologyMathematiqueApp.getApplication().show(aboutBox);
     }
-    
-    @Action 
+
+    @Action
     public void showOuvirImage() {
         if (ouvrirFichier == null) {
             JFrame mainFrame = MorphologyMathematiqueApp.getApplication().getMainFrame();
             ouvrirFichier = new MorphologyMathematiqueOpenImageBox(mainFrame);
             ouvrirFichier.setLocationRelativeTo(mainFrame);
         }
-        
+
         MorphologyMathematiqueApp.getApplication().show(ouvrirFichier);
+    }
+
+    @Action 
+    public void showManuel() {
+        if (manuel == null) {
+            JFrame mainFrame = MorphologyMathematiqueApp.getApplication().getMainFrame();
+            manuel = new MorphologyMathematiqueManuel(mainFrame);
+            manuel.setLocationRelativeTo(mainFrame);
+        }
+        
+        MorphologyMathematiqueApp.getApplication().show(manuel);
+    }
+    
+    @Action
+    public void ouverture() {
+        traitee.setImage(Operations.open(MorphologyMathematiqueApp.getApplication().imageCourante, a, 1), originale.getWidth(), originale.getHeight());
+        traitee.repaint();
+    }
+
+    @Action
+    public void fermeture() {
     }
 
     /** This method is called from within the constructor to
@@ -113,6 +139,13 @@ public class MorphologyMathematiqueView extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        originale = new morphologymathematique.vues.ZoneImage();
+        traitee = new morphologymathematique.vues.ZoneImage();
+        jLabel2 = new javax.swing.JLabel();
+        choixA = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         ouvertureFichier = new javax.swing.JMenuItem();
@@ -121,7 +154,7 @@ public class MorphologyMathematiqueView extends FrameView {
         ouvertureFonction = new javax.swing.JMenuItem();
         fermetureFonction = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
-        manuel = new javax.swing.JMenuItem();
+        MenuItem1 = new javax.swing.JMenuItem();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
@@ -129,25 +162,121 @@ public class MorphologyMathematiqueView extends FrameView {
         statusAnimationLabel = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
 
+        mainPanel.setMaximumSize(new java.awt.Dimension(800, 600));
         mainPanel.setName("mainPanel"); // NOI18N
         mainPanel.setPreferredSize(new java.awt.Dimension(800, 600));
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(morphologymathematique.vues.MorphologyMathematiqueApp.class).getContext().getResourceMap(MorphologyMathematiqueView.class);
+        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        originale.setName("originale"); // NOI18N
+        originale.setPreferredSize(new java.awt.Dimension(300, 300));
+
+        javax.swing.GroupLayout originaleLayout = new javax.swing.GroupLayout(originale);
+        originale.setLayout(originaleLayout);
+        originaleLayout.setHorizontalGroup(
+            originaleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+        originaleLayout.setVerticalGroup(
+            originaleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        traitee.setName("traitee"); // NOI18N
+        traitee.setPreferredSize(new java.awt.Dimension(300, 300));
+
+        javax.swing.GroupLayout traiteeLayout = new javax.swing.GroupLayout(traitee);
+        traitee.setLayout(traiteeLayout);
+        traiteeLayout.setHorizontalGroup(
+            traiteeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+        traiteeLayout.setVerticalGroup(
+            traiteeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        choixA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5" }));
+        choixA.setName("choixA"); // NOI18N
+        choixA.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                choixAItemStateChanged(evt);
+            }
+        });
+
+        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(99, 99, 99)
+                                .addComponent(originale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(214, 214, 214)
+                                .addComponent(jLabel1)))
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(177, 177, 177)
+                                .addComponent(traitee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(934, 934, 934)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(300, 300, 300)
+                                .addComponent(jLabel2))))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(425, 425, 425)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(choixA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 978, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(180, 180, 180)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(choixA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(9, 9, 9))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap(15, Short.MAX_VALUE)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(traitee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel2))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(originale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel1)))
+                        .addGap(37, 37, 37)))
+                .addGap(622, 622, 622))
         );
+
+        jLabel3.getAccessibleContext().setAccessibleName(resourceMap.getString("jLabel3.AccessibleContext.accessibleName")); // NOI18N
 
         menuBar.setName("menuBar"); // NOI18N
         menuBar.setPreferredSize(new java.awt.Dimension(122, 21));
         menuBar.setRequestFocusEnabled(false);
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(morphologymathematique.vues.MorphologyMathematiqueApp.class).getContext().getResourceMap(MorphologyMathematiqueView.class);
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
@@ -167,6 +296,7 @@ public class MorphologyMathematiqueView extends FrameView {
         choixFonction.setText(resourceMap.getString("choixFonction.text")); // NOI18N
         choixFonction.setName("choixFonction"); // NOI18N
 
+        ouvertureFonction.setAction(actionMap.get("ouverture")); // NOI18N
         ouvertureFonction.setText(resourceMap.getString("ouvertureFonction.text")); // NOI18N
         ouvertureFonction.setName("ouvertureFonction"); // NOI18N
         choixFonction.add(ouvertureFonction);
@@ -180,9 +310,10 @@ public class MorphologyMathematiqueView extends FrameView {
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
         helpMenu.setName("helpMenu"); // NOI18N
 
-        manuel.setText(resourceMap.getString("manuel.text")); // NOI18N
-        manuel.setName("manuel"); // NOI18N
-        helpMenu.add(manuel);
+        MenuItem1.setAction(actionMap.get("showManuel")); // NOI18N
+        MenuItem1.setText(resourceMap.getString("MenuItem1.text")); // NOI18N
+        MenuItem1.setName("MenuItem1"); // NOI18N
+        helpMenu.add(MenuItem1);
 
         aboutMenuItem.setAction(actionMap.get("showAboutBox")); // NOI18N
         aboutMenuItem.setName("aboutMenuItem"); // NOI18N
@@ -205,11 +336,11 @@ public class MorphologyMathematiqueView extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 1820, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1030, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1650, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -232,27 +363,50 @@ public class MorphologyMathematiqueView extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    //Modifier le a dans l'application quand l'utilisateur 
+    private void choixAItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choixAItemStateChanged
+        if (evt.getStateChange() != MorphologyMathematiqueApp.getApplication().a) {
+            MorphologyMathematiqueApp.getApplication().a = evt.getStateChange();
+        }
+    }//GEN-LAST:event_choixAItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem MenuItem1;
+    private javax.swing.JComboBox choixA;
     private javax.swing.JMenu choixFonction;
     private javax.swing.JMenuItem fermetureFonction;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenuItem manuel;
     private javax.swing.JMenuBar menuBar;
+    private morphologymathematique.vues.ZoneImage originale;
     private javax.swing.JMenuItem ouvertureFichier;
     private javax.swing.JMenuItem ouvertureFonction;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private morphologymathematique.vues.ZoneImage traitee;
     // End of variables declaration//GEN-END:variables
-
     private final Timer messageTimer;
     private final Timer busyIconTimer;
     private final Icon idleIcon;
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
-    protected  Image currentImage;
-
+    private int a = 1;
     private JDialog aboutBox;
     private JDialog ouvrirFichier;
+    private JDialog manuel;
+
+    public void ajoutImageOriginal(File currentFile) {
+        try {
+            MorphologyMathematiqueApp.getApplication().imageCourante = ImageIO.read(currentFile);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+        originale.setImage(MorphologyMathematiqueApp.getApplication().imageCourante, originale.getWidth(), originale.getHeight());
+        originale.repaint();
+    }
 }

@@ -3,12 +3,11 @@
  */
 package morphologymathematique.vues;
 
-import java.awt.Image;
 import java.io.File;
 import javax.swing.JOptionPane;
 
 public class MorphologyMathematiqueOpenImageBox extends javax.swing.JDialog {
-    
+
     public MorphologyMathematiqueOpenImageBox(java.awt.Frame parent) {
         super(parent);
         initComponents();
@@ -62,15 +61,17 @@ public class MorphologyMathematiqueOpenImageBox extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void imageChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageChooserActionPerformed
-        // TODO add your handling code here:
+
         if (evt.getActionCommand().equalsIgnoreCase("ApproveSelection")) {
             File fichierChoisi = imageChooser.getSelectedFile();
             String paramString = fichierChoisi.getName();
             //on test l'extension de fichier
-            if ((paramString.indexOf(".jpg") != -1) || (paramString.indexOf(".gif") != -1)) {
-                
+            MorphologyMathematiqueView main = (MorphologyMathematiqueView) MorphologyMathematiqueApp.getApplication().getMainView();
+            if ((paramString.indexOf(".jpg") != -1) || (paramString.indexOf(".gif") != -1)) {                
+                main.ajoutImageOriginal(fichierChoisi);
+                dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Veuillez sélectionner une image .gif ou .jpg !", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner une image .gif ou .jpg ", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         } else if (evt.getActionCommand().equalsIgnoreCase("CancelSelection")) {
             dispose();
@@ -79,20 +80,4 @@ public class MorphologyMathematiqueOpenImageBox extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser imageChooser;
     // End of variables declaration//GEN-END:variables
-
-    protected Image currentImage;
-    
-    /**
-     * @return the currentImage
-     */
-    public Image getCurrentImage() {
-        return currentImage;
-    }
-
-    /**
-     * @param currentImage the currentImage to set
-     */
-    public void setCurrentImage(Image currentImage) {
-        this.currentImage = currentImage;
-    }
 }

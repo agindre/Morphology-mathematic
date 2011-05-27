@@ -4,6 +4,7 @@
 
 package morphologymathematique.vues;
 
+import java.awt.image.BufferedImage;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -11,7 +12,9 @@ import org.jdesktop.application.SingleFrameApplication;
  * The main class of the application.
  */
 public class MorphologyMathematiqueApp extends SingleFrameApplication {
-
+    
+    protected int a = 1;
+    protected BufferedImage imageCourante;
     /**
      * At startup create and show the main frame of the application.
      */
