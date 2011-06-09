@@ -13,7 +13,7 @@
             </test-roots>
         </data>
         <swingapp xmlns="http://www.netbeans.org/ns/form-swingapp/1">
-            <application-class name="morphologymathematique.vues.MorphologyMathematiqueApp"/>
+            <application-class name="ensiie.morphologieMathematique.vues.MorphologyMathematiqueApp"/>
         </swingapp>
     </configuration>
 </project>
